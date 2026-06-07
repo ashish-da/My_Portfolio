@@ -2345,14 +2345,6 @@
                 <div class="contact-card-val">Ashishrawat.da@gmail.com</div>
               </div>
             </a>
-            <a href="tel:+919105335275" class="contact-card">
-              <div class="contact-card-icon" style="background:rgba(52,211,153,0.1);color:#34d399"><i
-                  class="fas fa-phone"></i></div>
-              <div>
-                <div class="contact-card-title">Phone</div>
-                <div class="contact-card-val">+91 9105335275</div>
-              </div>
-            </a>
             <a href="https://linkedin.com/in/ashish-da" target="_blank" class="contact-card">
               <div class="contact-card-icon" style="background:rgba(129,140,248,0.1);color:#818cf8"><i
                   class="fab fa-linkedin"></i></div>
@@ -2385,7 +2377,6 @@
                 class="fab fa-github"></i></a>
             <a href="mailto:Ashishrawat.da@gmail.com" class="social-btn" title="Email"><i
                 class="fas fa-envelope"></i></a>
-            <a href="tel:+919105335275" class="social-btn" title="Call"><i class="fas fa-phone"></i></a>
           </div>
         </div>
 
@@ -2414,7 +2405,7 @@
   <!-- FOOTER -->
   <footer>
     <p>Designed & Built by <span>Ashish Rawat</span> · Data Analyst · Dehradun, India</p>
-    <p style="margin-top:0.4rem;">© 2025 Ashish Rawat. All rights reserved.</p>
+    <p style="margin-top:0.4rem;">© 2026 Ashish Rawat. All rights reserved.</p>
   </footer>
 
   <script>
@@ -2462,16 +2453,32 @@
     // ===== ANIMATED COUNTERS =====
     function animateCounter(el, target, suffix = '') {
       const isLarge = target >= 1000;
-      const duration = isLarge ? 2000 : 1500;
+      const duration = isLarge ? 2500 : 1800;
       const start = Date.now();
+      const originalHTML = el.innerHTML;
+      const hasSpanTag = originalHTML.includes('<span>');
       const step = () => {
         const elapsed = Date.now() - start;
         const progress = Math.min(elapsed / duration, 1);
         const ease = 1 - Math.pow(1 - progress, 3);
         const current = Math.floor(target * ease);
-        el.innerHTML = (current >= 1000 ? current.toLocaleString() : current) + suffix;
+        const display = current >= 1000 ? current.toLocaleString() : current;
+        if (hasSpanTag) {
+          const spanContent = originalHTML.substring(originalHTML.indexOf('<span>'), originalHTML.indexOf('</span>') + 7);
+          el.innerHTML = display + spanContent;
+        } else {
+          el.innerHTML = display + suffix;
+        }
         if (progress < 1) requestAnimationFrame(step);
-        else el.innerHTML = (target >= 1000 ? target.toLocaleString() : target) + suffix;
+        else {
+          const finalDisplay = target >= 1000 ? target.toLocaleString() : target;
+          if (hasSpanTag) {
+            const spanContent = originalHTML.substring(originalHTML.indexOf('<span>'), originalHTML.indexOf('</span>') + 7);
+            el.innerHTML = finalDisplay + spanContent;
+          } else {
+            el.innerHTML = finalDisplay + suffix;
+          }
+        }
       };
       requestAnimationFrame(step);
     }
@@ -2486,7 +2493,11 @@
           // animate counters
           entry.target.querySelectorAll('[data-target]').forEach(el => {
             const t = parseInt(el.dataset.target);
-            const suffix = el.innerHTML.includes('%') ? '%' : el.innerHTML.includes('+') ? '+' : '';
+            let suffix = '';
+            if (el.innerHTML.includes('<span>%</span>')) suffix = '%';
+            else if (el.innerHTML.includes('<span>+</span>')) suffix = '+';
+            else if (el.innerHTML.includes('%')) suffix = '%';
+            else if (el.innerHTML.includes('+')) suffix = '+';
             animateCounter(el, t, suffix);
           });
         }
@@ -2499,9 +2510,9 @@
     setTimeout(() => {
       document.querySelectorAll('.hero-stats [data-target]').forEach(el => {
         const t = parseInt(el.dataset.target);
-        animateCounter(el, t);
+        animateCounter(el, t, '');
       });
-    }, 800);
+    }, 300);
 
     // ===== PROJECT FILTER =====
     const filterBtns = document.querySelectorAll('.filter-btn');
